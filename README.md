@@ -1,4 +1,4 @@
-# x64dbg
+# x64dbg Ñ§Ï°°æ
 
 <img width="100" src="https://github.com/x64dbg/x64dbg/raw/development/src/bug_black.png"/>
 
