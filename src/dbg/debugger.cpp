@@ -91,6 +91,8 @@ bool bNoWow64SingleStepWorkaround = false;
 bool bTraceBrowserNeedsUpdate = false;
 bool bForceLoadSymbols = false;
 duint DbgEvents = 0;
+
+//最大跳过10000次异常
 duint maxSkipExceptionCount = 10000;
 HANDLE mProcHandle;
 HANDLE mForegroundHandle;
@@ -1865,7 +1867,8 @@ static bool dbgdetachDisableAllBreakpoints(const BREAKPOINT* bp)
 }
 
 static void cbException(EXCEPTION_DEBUG_INFO* ExceptionData)
-{
+{	
+	
     hActiveThread = ThreadGetHandle(((DEBUG_EVENT*)GetDebugData())->dwThreadId);
     PLUG_CB_EXCEPTION callbackInfo;
     callbackInfo.Exception = ExceptionData;
@@ -1952,7 +1955,8 @@ static void cbException(EXCEPTION_DEBUG_INFO* ExceptionData)
         else
             dprintf(QT_TRANSLATE_NOOP("DBG", "First chance exception on %p (%.8X)!\n"), addr, ExceptionCode);
         SetNextDbgContinueStatus(DBG_EXCEPTION_NOT_HANDLED);
-        if((bSkipExceptions || dbgisignoredexception(ExceptionCode)) && (!maxSkipExceptionCount || ++skipExceptionCount < maxSkipExceptionCount))
+        //if((bSkipExceptions || dbgisignoredexception(ExceptionCode)) && (!maxSkipExceptionCount || ++skipExceptionCount < maxSkipExceptionCount))取消跳过异常次数判断
+		if((bSkipExceptions || dbgisignoredexception(ExceptionCode)))
             return;
     }
     else //lock the exception

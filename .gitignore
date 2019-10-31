@@ -79,3 +79,12 @@ bw-output/
 build-wrapper*
 My Amplifier Results - */
 My Inspector Results - */
+x64dbg.si4project/cache/parse/src_dbg_analysis_controlflowanalysis.cpp.sisc
+x64dbg.si4project/cache/parse/src_dbg_analysis_controlflowanalysis.h.sisc
+x64dbg.si4project/x64dbg.sip_sym
+x64dbg.si4project/x64dbg.sip_xab
+x64dbg.si4project/x64dbg.sip_xad
+x64dbg.si4project/x64dbg.sip_xc
+x64dbg.si4project/x64dbg.sip_xf
+x64dbg.si4project/x64dbg.sip_xm
+x64dbg.si4project/x64dbg.sip_xr

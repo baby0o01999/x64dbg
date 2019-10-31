@@ -1,0 +1,4 @@
+---- skipExceptionCount Matches (3 in 1 files) ----
+debugger.cpp (src\dbg) line 55 : static duint skipExceptionCount = 0;
+dbgsetskipexceptions in debugger.cpp (src\dbg) :     skipExceptionCount = 0;
+cbException in debugger.cpp (src\dbg) :         if((bSkipExceptions || dbgisignoredexception(ExceptionCode)) && (!maxSkipExceptionCount || ++skipExceptionCount < maxSkipExceptionCount))

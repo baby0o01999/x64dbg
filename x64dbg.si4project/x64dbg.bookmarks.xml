@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<SourceInsightBookmarks
+	AppVer="4.00.0099"
+	AppVerMinReader="4.00.0009"
+	>
+	<Bookmarks>
+		<Mark
+			Name="1850393151319052019102"
+			Comment="cbException x64dbg异常处理"
+			File="src\dbg\debugger.cpp"
+			Line="1868"
+			Column="12"
+			Symbol="cbException"
+			SymbolInstance="0"
+			SymbolType="Function"
+			LineOffset="0"
+			/>
+		<Mark
+			Name="2157726693400152019102"
+			Comment="注册所有命令"
+			File="src\dbg\x64dbg.cpp"
+			Line="75"
+			Column="0"
+			Symbol="registercommands"
+			SymbolInstance="0"
+			SymbolType="Function"
+			LineOffset="0"
+			/>
+		<Mark
+			Name="2177849735700152019102"
+			Comment="调试引擎注册回调"
+			File="src\dbg\debugger.cpp"
+			Line="2679"
+			Column="25"
+			Symbol="debugLoopFunction"
+			SymbolInstance="0"
+			SymbolType="Function"
+			LineOffset="113"
+			/>
+	</Bookmarks>
+</SourceInsightBookmarks>
