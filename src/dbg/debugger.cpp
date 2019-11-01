@@ -1716,7 +1716,7 @@ static void cbLoadDll(LOAD_DLL_DEBUG_INFO* LoadDll)
     if(ModNameFromAddr(duint(base), modname, true) && scmp(modname, "ntdll.dll"))
     {
         if(settingboolget("Misc", "QueryProcessCookie"))
-            cookie.HandleNtdllLoad();
+            cookie.HandleNtdllLoad(bIsAttached);
         if(settingboolget("Misc", "TransparentExceptionStepping"))
             exceptionDispatchAddr = DbgValFromString("ntdll:KiUserExceptionDispatcher");
     }
@@ -2764,7 +2764,10 @@ static void debugLoopFunction(void* lpParameter, bool attach)
     varset("$hp", (duint)0, true);
     varset("$pid", (duint)0, true);
     if(hProcessToken)
+    {
         CloseHandle(hProcessToken);
+        hProcessToken = 0;
+    }
 
     pDebuggedEntry = 0;
     pDebuggedBase = 0;

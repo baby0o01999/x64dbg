@@ -559,6 +559,10 @@ void MainWindow::loadTabDefaultOrder()
     //TODO
     for(int i = 0; i < mWidgetList.size(); i++)
         addQWidgetTab(mWidgetList[i].widget, mWidgetList[i].nativeName);
+
+    // Add plugin tabs to the end
+    for(const auto & widget : mPluginWidgetList)
+        addQWidgetTab(widget.widget, widget.nativeName);
 }
 
 void MainWindow::loadTabSavedOrder()
@@ -592,6 +596,19 @@ void MainWindow::loadTabSavedOrder()
     // Setup tabs
     for(auto & widget : tabIndexToWidget)
         addQWidgetTab(widget.first, widget.second);
+
+    // 'Restore' deleted tabs
+    for(int i = 0; i < mWidgetList.size(); i++)
+    {
+        duint isDeleted = 0;
+        BridgeSettingGetUint("Deleted Tabs", mWidgetList[i].nativeName.toUtf8().constData(), &isDeleted);
+        if(isDeleted)
+            mTabWidget->DeleteTab(mTabWidget->indexOf(mWidgetList[i].widget));
+    }
+
+    // Add plugin tabs to the end
+    for(const auto & widget : mPluginWidgetList)
+        addQWidgetTab(widget.widget, widget.nativeName);
 }
 
 void MainWindow::clearTabWidget()
@@ -1009,10 +1026,10 @@ void MainWindow::hideTab()
 
 void MainWindow::openSettings()
 {
-    SettingsDialog* settings = new SettingsDialog(this);
-    connect(settings, SIGNAL(chkSaveLoadTabOrderStateChanged(bool)), this, SLOT(chkSaveloadTabSavedOrderStateChangedSlot(bool)));
-    settings->lastException = lastException;
-    settings->exec();
+    SettingsDialog settings(this);
+    connect(&settings, SIGNAL(chkSaveLoadTabOrderStateChanged(bool)), this, SLOT(chkSaveloadTabSavedOrderStateChangedSlot(bool)));
+    settings.lastException = lastException;
+    settings.exec();
 }
 
 void MainWindow::openAppearance()
@@ -1126,6 +1143,7 @@ void MainWindow::addMenuEntry(int hMenu, QString title)
     newInfo.hParentMenu = hMenu;
     QWidget* parent = hMenu == -1 ? this : menu->parent;
     QAction* wAction = new QAction(title, parent);
+    parent->addAction(wAction);
     wAction->setObjectName(QString().sprintf("ENTRY|%d", hEntryNew));
     wAction->setShortcutContext((!menu || menu->globalMenu) ? Qt::ApplicationShortcut : Qt::WidgetShortcut);
     parent->addAction(wAction);
@@ -1633,7 +1651,9 @@ void MainWindow::addQWidgetTab(QWidget* qWidget, QString nativeName)
 
 void MainWindow::addQWidgetTab(QWidget* qWidget)
 {
-    addQWidgetTab(qWidget, qWidget->windowTitle());
+    WidgetInfo info(qWidget, qWidget->metaObject()->className());
+    addQWidgetTab(info.widget, info.nativeName);
+    mPluginWidgetList.append(info);
 }
 
 void MainWindow::showQWidgetTab(QWidget* qWidget)
@@ -1667,7 +1687,12 @@ void MainWindow::tabMovedSlot(int from, int to)
         // Remove space in widget name and append Tab to get config settings (CPUTab, MemoryMapTab, etc...)
         //QString tabName = mTabWidget->tabText(i).replace(" ", "") + "Tab";
         QString tabName = mTabWidget->getNativeName(i);
-        Config()->setUint("TabOrder", tabName, i);
+        auto found = std::find_if(mWidgetList.begin(), mWidgetList.end(), [&tabName](const WidgetInfo & info)
+        {
+            return info.nativeName == tabName;
+        });
+        if(found != mWidgetList.end())
+            Config()->setUint("TabOrder", tabName, i);
     }
 }
 
