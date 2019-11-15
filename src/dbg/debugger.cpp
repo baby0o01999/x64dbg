@@ -48,7 +48,6 @@ static duint pCreateProcessBase = 0;
 static duint pDebuggedEntry = 0;
 static bool bRepeatIn = false;
 static duint stepRepeat = 0;
-static bool isPausedByUser = false;
 static bool isDetachedByUser = false;
 static bool bIsAttached = false;
 static bool bSkipExceptions = false;
@@ -327,11 +326,6 @@ void dbgsetsteprepeat(bool steppingIn, duint repeat)
 {
     bRepeatIn = steppingIn;
     stepRepeat = repeat;
-}
-
-void dbgsetispausedbyuser(bool b)
-{
-    isPausedByUser = b;
 }
 
 void dbgsetisdetachedbyuser(bool b)
@@ -734,6 +728,7 @@ static bool getConditionValue(const char* expression)
 
 void cbPauseBreakpoint()
 {
+    dputs(QT_TRANSLATE_NOOP("DBG", "paused!"));
     hActiveThread = ThreadGetHandle(((DEBUG_EVENT*)GetDebugData())->dwThreadId);
     auto CIP = GetContextDataEx(hActiveThread, UE_CIP);
     DeleteBPX(CIP);
@@ -747,6 +742,7 @@ void cbPauseBreakpoint()
     PLUG_CB_PAUSEDEBUG pauseInfo = { nullptr };
     plugincbcall(CB_PAUSEDEBUG, &pauseInfo);
     dbgsetforeground();
+    dbgsetskipexceptions(false);
     wait(WAITID_RUN);
 }
 
@@ -1508,6 +1504,7 @@ static void cbCreateThread(CREATE_THREAD_DEBUG_INFO* CreateThread)
         PLUG_CB_PAUSEDEBUG pauseInfo = { nullptr };
         plugincbcall(CB_PAUSEDEBUG, &pauseInfo);
         dbgsetforeground();
+        dbgsetskipexceptions(false);
         wait(WAITID_RUN);
     }
     else
@@ -1566,6 +1563,7 @@ static void cbExitThread(EXIT_THREAD_DEBUG_INFO* ExitThread)
         PLUG_CB_PAUSEDEBUG pauseInfo = { nullptr };
         plugincbcall(CB_PAUSEDEBUG, &pauseInfo);
         dbgsetforeground();
+        dbgsetskipexceptions(false);
         wait(WAITID_RUN);
     }
 }
@@ -1769,6 +1767,7 @@ static void cbLoadDll(LOAD_DLL_DEBUG_INFO* LoadDll)
         PLUG_CB_PAUSEDEBUG pauseInfo = { nullptr };
         plugincbcall(CB_PAUSEDEBUG, &pauseInfo);
         dbgsetforeground();
+        dbgsetskipexceptions(false);
         wait(WAITID_RUN);
     }
 }
@@ -1801,6 +1800,7 @@ static void cbUnloadDll(UNLOAD_DLL_DEBUG_INFO* UnloadDll)
         PLUG_CB_PAUSEDEBUG pauseInfo = { nullptr };
         plugincbcall(CB_PAUSEDEBUG, &pauseInfo);
         dbgsetforeground();
+        dbgsetskipexceptions(false);
         wait(WAITID_RUN);
     }
 
@@ -1848,6 +1848,7 @@ static void cbOutputDebugString(OUTPUT_DEBUG_STRING_INFO* DebugString)
         PLUG_CB_PAUSEDEBUG pauseInfo = { nullptr };
         plugincbcall(CB_PAUSEDEBUG, &pauseInfo);
         dbgsetforeground();
+        dbgsetskipexceptions(false);
         wait(WAITID_RUN);
     }
 }
@@ -1901,27 +1902,6 @@ static void cbException(EXCEPTION_DEBUG_INFO* ExceptionData)
                 dputs(QT_TRANSLATE_NOOP("DBG", "Detached!"));
             isDetachedByUser = false;
             _dbg_animatestop(); // Stop animating
-            return;
-        }
-        else if(isPausedByUser)
-        {
-            dputs(QT_TRANSLATE_NOOP("DBG", "paused!"));
-            SetNextDbgContinueStatus(DBG_CONTINUE);
-            _dbg_animatestop(); // Stop animating
-            //update memory map
-            MemUpdateMap();
-            DebugUpdateGuiSetStateAsync(GetContextDataEx(hActiveThread, UE_CIP), true);
-            //lock
-            lock(WAITID_RUN);
-            bPausedOnException = true;
-            // Plugin callback
-            PLUG_CB_PAUSEDEBUG pauseInfo = { nullptr };
-            plugincbcall(CB_PAUSEDEBUG, &pauseInfo);
-            dbgsetforeground();
-            dbgsetskipexceptions(false);
-            plugincbcall(CB_EXCEPTION, &callbackInfo);
-            wait(WAITID_RUN);
-            bPausedOnException = false;
             return;
         }
         SetContextDataEx(hActiveThread, UE_CIP, (duint)ExceptionData->ExceptionRecord.ExceptionAddress);
