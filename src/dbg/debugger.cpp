@@ -1948,6 +1948,7 @@ static void cbException(EXCEPTION_DEBUG_INFO* ExceptionData)
             dprintf(QT_TRANSLATE_NOOP("DBG", "First chance exception on %p (%.8X)!\n"), addr, ExceptionCode);
         SetNextDbgContinueStatus(DBG_EXCEPTION_NOT_HANDLED);
         //if((bSkipExceptions || dbgisignoredexception(ExceptionCode)) && (!maxSkipExceptionCount || ++skipExceptionCount < maxSkipExceptionCount))取消跳过异常次数判断
+		//忽略异常次数
 		if((bSkipExceptions || dbgisignoredexception(ExceptionCode)))
             return;
     }
