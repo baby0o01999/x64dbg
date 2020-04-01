@@ -1,4 +1,46 @@
----- skipExceptionCount Matches (3 in 1 files) ----
-debugger.cpp (src\dbg) line 55 : static duint skipExceptionCount = 0;
-dbgsetskipexceptions in debugger.cpp (src\dbg) :     skipExceptionCount = 0;
-cbException in debugger.cpp (src\dbg) :         if((bSkipExceptions || dbgisignoredexception(ExceptionCode)) && (!maxSkipExceptionCount || ++skipExceptionCount < maxSkipExceptionCount))
+---- WAITID_RUN Matches (45 in 7 files) ----
+cbDebugRunInternal in cmd-debug-control.cpp (src\dbg\commands) :     unlock(WAITID_RUN);
+cbDebugStop in cmd-debug-control.cpp (src\dbg\commands) :             unlock(WAITID_RUN);
+cbDebugDetach in cmd-debug-control.cpp (src\dbg\commands) :     unlock(WAITID_RUN); //run
+cbDebugLoadLibBPX in cmd-misc.cpp (src\dbg\commands) :     lock(WAITID_RUN);
+cbDebugLoadLibBPX in cmd-misc.cpp (src\dbg\commands) :     wait(WAITID_RUN);
+cbDebugLoadLib in cmd-misc.cpp (src\dbg\commands) :     unlock(WAITID_RUN);
+cbDebugFreeLibBPX in cmd-misc.cpp (src\dbg\commands) :     lock(WAITID_RUN);
+cbDebugFreeLibBPX in cmd-misc.cpp (src\dbg\commands) :     wait(WAITID_RUN);
+cbDebugFreeLib in cmd-misc.cpp (src\dbg\commands) :     unlock(WAITID_RUN);
+dbgisrunning in debugger.cpp (src\dbg) :     return !waitislocked(WAITID_RUN);
+cbPauseBreakpoint in debugger.cpp (src\dbg) :     lock(WAITID_RUN);
+cbPauseBreakpoint in debugger.cpp (src\dbg) :     wait(WAITID_RUN);
+cbGenericBreakpoint in debugger.cpp (src\dbg) :             lock(WAITID_RUN);
+cbGenericBreakpoint in debugger.cpp (src\dbg) :             wait(WAITID_RUN);
+cbGenericBreakpoint in debugger.cpp (src\dbg) :     lock(WAITID_RUN);
+cbGenericBreakpoint in debugger.cpp (src\dbg) :         unlock(WAITID_RUN);
+cbGenericBreakpoint in debugger.cpp (src\dbg) :     wait(WAITID_RUN);
+cbRunToUserCodeBreakpoint in debugger.cpp (src\dbg) :     lock(WAITID_RUN);
+cbRunToUserCodeBreakpoint in debugger.cpp (src\dbg) :     wait(WAITID_RUN);
+cbStep in debugger.cpp (src\dbg) :         lock(WAITID_RUN);
+cbStep in debugger.cpp (src\dbg) :         wait(WAITID_RUN);
+cbRtrFinalStep in debugger.cpp (src\dbg) :         lock(WAITID_RUN);
+cbRtrFinalStep in debugger.cpp (src\dbg) :         wait(WAITID_RUN);
+cbCreateThread in debugger.cpp (src\dbg) :         lock(WAITID_RUN);
+cbCreateThread in debugger.cpp (src\dbg) :         wait(WAITID_RUN);
+cbExitThread in debugger.cpp (src\dbg) :         lock(WAITID_RUN);
+cbExitThread in debugger.cpp (src\dbg) :         wait(WAITID_RUN);
+cbSystemBreakpoint in debugger.cpp (src\dbg) :     lock(WAITID_RUN); // Allow the user to run a script file now
+cbSystemBreakpoint in debugger.cpp (src\dbg) :         unlock(WAITID_RUN);
+cbSystemBreakpoint in debugger.cpp (src\dbg) :     wait(WAITID_RUN);
+cbLoadDll in debugger.cpp (src\dbg) :         lock(WAITID_RUN);
+cbLoadDll in debugger.cpp (src\dbg) :         wait(WAITID_RUN);
+cbUnloadDll in debugger.cpp (src\dbg) :         lock(WAITID_RUN);
+cbUnloadDll in debugger.cpp (src\dbg) :         wait(WAITID_RUN);
+cbOutputDebugString in debugger.cpp (src\dbg) :         lock(WAITID_RUN);
+cbOutputDebugString in debugger.cpp (src\dbg) :         wait(WAITID_RUN);
+cbException in debugger.cpp (src\dbg) :             lock(WAITID_RUN);
+cbException in debugger.cpp (src\dbg) :             wait(WAITID_RUN);
+cbException in debugger.cpp (src\dbg) :     lock(WAITID_RUN);
+cbException in debugger.cpp (src\dbg) :     wait(WAITID_RUN);
+_dbg_sendmessage in _exports.cpp (src\dbg) :         return (duint)waitislocked(WAITID_RUN);
+_plugin_debugpause in _plugins.cpp (src\dbg) :     lock(WAITID_RUN);
+_plugin_debugpause in _plugins.cpp (src\dbg) :     wait(WAITID_RUN);
+WAIT_ID in threading.h (src\dbg) :     WAITID_RUN,
+registercommands in x64dbg.cpp (src\dbg) :     dbgcmdnew("run,go,r,g", cbDebugRun, true); //unlock WAITID_RUN
